@@ -108,24 +108,27 @@ class _HomePageState extends State<HomePage> {
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              Container(
-                margin: EdgeInsets.all(16),
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-                // width: double.infinity,
-                // height: 500,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Color(0xff2E5FEC), Color(0xff6B9AF8)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(25),
-                ),
-                child: _weatherModel == null
-                    ? Center(child: CircularProgressIndicator())
-                    : Column(
+          child: _weatherModel == null
+              ? Center(child: CircularProgressIndicator())
+              : Column(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.all(16),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 24,
+                      ),
+                      // width: double.infinity,
+                      // height: 500,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [Color(0xff2E5FEC), Color(0xff6B9AF8)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      child: Column(
                         children: [
                           Text(
                             "${_weatherModel!.location.name}, ${_weatherModel!.location.country}",
@@ -138,7 +141,7 @@ class _HomePageState extends State<HomePage> {
                             height: 100,
                           ),
                           Text(
-                            "23.9 °",
+                            "${_weatherModel!.current.tempC} °",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 100,
@@ -155,27 +158,29 @@ class _HomePageState extends State<HomePage> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               WeatherItem(
-                                value: "10",
+                                value: _weatherModel!.current.windKph
+                                    .toString(),
                                 unit: "km/h",
                                 image: "windspeed",
                               ),
                               WeatherItem(
-                                value: "10",
-                                unit: "km/h",
+                                value: _weatherModel!.current.humidity
+                                    .toString(),
+                                unit: "%",
                                 image: "humidity",
                               ),
                               WeatherItem(
-                                value: "10",
-                                unit: "km/h",
+                                value: _weatherModel!.current.cloud.toString(),
+                                unit: "%",
                                 image: "cloud",
                               ),
                             ],
                           ),
                         ],
                       ),
-              ),
-            ],
-          ),
+                    ),
+                  ],
+                ),
         ),
       ),
     );
