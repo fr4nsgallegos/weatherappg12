@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:weatherappg12/models/weather_model.dart';
 import 'package:weatherappg12/services/api_services.dart';
 import 'package:weatherappg12/widgets/weather_item.dart';
 
@@ -11,6 +12,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  WeatherModel? _weatherModel;
+
   Future<Position?> getPosition() async {
     bool serviceEnabled;
     LocationPermission permission;
@@ -48,6 +51,28 @@ class _HomePageState extends State<HomePage> {
       print("Error al obtenet ubicación: $e");
       return null;
     }
+  }
+
+  Future<void> getWeatherFromPosition() async {
+    Position? _pos = await getPosition();
+
+    if (_pos == null) {
+      print("No se pudo obtener la ubicación");
+      return;
+    }
+
+    //RETORNA CORRECTAMENTE LA POSICIÓN DEL DISPOSITIVO
+    _weatherModel = await ApiServices().getWeatherInfoByPos(
+      _pos.latitude,
+      _pos.longitude,
+    );
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getWeatherFromPosition();
   }
 
   @override
@@ -98,43 +123,56 @@ class _HomePageState extends State<HomePage> {
                   ),
                   borderRadius: BorderRadius.circular(25),
                 ),
-                child: Column(
-                  children: [
-                    Text(
-                      "Lima, Perú",
-                      style: TextStyle(color: Colors.white, fontSize: 18),
-                    ),
-                    SizedBox(height: 24),
-                    Image.asset("assets/icons/heavycloudy.png", height: 100),
-                    Text(
-                      "23.9 °",
-                      style: TextStyle(color: Colors.white, fontSize: 100),
-                    ),
-                    Divider(
-                      color: Colors.white,
-                      thickness: 0.5,
-                      indent: 16,
-                      endIndent: 16,
-                      height: 32,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        WeatherItem(
-                          value: "10",
-                          unit: "km/h",
-                          image: "windspeed",
-                        ),
-                        WeatherItem(
-                          value: "10",
-                          unit: "km/h",
-                          image: "humidity",
-                        ),
-                        WeatherItem(value: "10", unit: "km/h", image: "cloud"),
-                      ],
-                    ),
-                  ],
-                ),
+                child: _weatherModel == null
+                    ? Center(child: CircularProgressIndicator())
+                    : Column(
+                        children: [
+                          Text(
+                            "${_weatherModel!.location.name}, ${_weatherModel!.location.country}",
+                            style: TextStyle(color: Colors.white, fontSize: 18),
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(height: 24),
+                          Image.asset(
+                            "assets/icons/heavycloudy.png",
+                            height: 100,
+                          ),
+                          Text(
+                            "23.9 °",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 100,
+                            ),
+                          ),
+                          Divider(
+                            color: Colors.white,
+                            thickness: 0.5,
+                            indent: 16,
+                            endIndent: 16,
+                            height: 32,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              WeatherItem(
+                                value: "10",
+                                unit: "km/h",
+                                image: "windspeed",
+                              ),
+                              WeatherItem(
+                                value: "10",
+                                unit: "km/h",
+                                image: "humidity",
+                              ),
+                              WeatherItem(
+                                value: "10",
+                                unit: "km/h",
+                                image: "cloud",
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
               ),
             ],
           ),
