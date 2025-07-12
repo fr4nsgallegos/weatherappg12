@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:weatherappg12/models/forecast_model.dart' hide Text, Icon;
 import 'package:weatherappg12/models/weather_model.dart';
 import 'package:weatherappg12/services/api_services.dart';
 import 'package:weatherappg12/widgets/forecast_item.dart';
@@ -13,7 +14,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  WeatherModel? _weatherModel;
+  // WeatherModel? _forecastModel;
+  ForecastModel? _forecastModel;
 
   Future<Position?> getPosition() async {
     bool serviceEnabled;
@@ -63,7 +65,7 @@ class _HomePageState extends State<HomePage> {
     }
 
     //RETORNA CORRECTAMENTE LA POSICIÓN DEL DISPOSITIVO
-    _weatherModel = await ApiServices().getWeatherInfoByPos(
+    _forecastModel = await ApiServices().getForecastInfoByPos(
       _pos.latitude,
       _pos.longitude,
     );
@@ -109,7 +111,7 @@ class _HomePageState extends State<HomePage> {
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: _weatherModel == null
+          child: _forecastModel == null
               ? Center(child: CircularProgressIndicator())
               : Column(
                   children: [
@@ -132,7 +134,7 @@ class _HomePageState extends State<HomePage> {
                       child: Column(
                         children: [
                           Text(
-                            "${_weatherModel!.location.name}, ${_weatherModel!.location.country}",
+                            "${_forecastModel!.location.name}, ${_forecastModel!.location.country}",
                             style: TextStyle(color: Colors.white, fontSize: 18),
                             textAlign: TextAlign.center,
                           ),
@@ -142,7 +144,7 @@ class _HomePageState extends State<HomePage> {
                             height: 100,
                           ),
                           Text(
-                            "${_weatherModel!.current.tempC} °",
+                            "${_forecastModel!.current.tempC} °",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 100,
@@ -159,19 +161,19 @@ class _HomePageState extends State<HomePage> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               WeatherItem(
-                                value: _weatherModel!.current.windKph
+                                value: _forecastModel!.current.windKph
                                     .toString(),
                                 unit: "km/h",
                                 image: "windspeed",
                               ),
                               WeatherItem(
-                                value: _weatherModel!.current.humidity
+                                value: _forecastModel!.current.humidity
                                     .toString(),
                                 unit: "%",
                                 image: "humidity",
                               ),
                               WeatherItem(
-                                value: _weatherModel!.current.cloud.toString(),
+                                value: _forecastModel!.current.cloud.toString(),
                                 unit: "%",
                                 image: "cloud",
                               ),
