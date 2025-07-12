@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:weatherappg12/models/weather_model.dart';
 import 'package:weatherappg12/services/api_services.dart';
+import 'package:weatherappg12/widgets/forecast_item.dart';
 import 'package:weatherappg12/widgets/weather_item.dart';
 
 class HomePage extends StatefulWidget {
@@ -176,6 +177,19 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ],
                           ),
+                        ],
+                      ),
+                    ),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          ForecastItem(),
+                          ForecastItem(),
+                          ForecastItem(),
+                          ForecastItem(),
+                          ForecastItem(),
+                          ForecastItem(),
                         ],
                       ),
                     ),
