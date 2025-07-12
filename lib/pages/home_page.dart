@@ -11,7 +11,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Future<void> getLocation() async {
+  Future<Position?> getPosition() async {
     bool serviceEnabled;
     LocationPermission permission;
 
@@ -19,10 +19,8 @@ class _HomePageState extends State<HomePage> {
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
 
     if (!serviceEnabled) {
-      setState(() {
-        print("Los servicios de ubicación estan deshabilitados");
-      });
-      return;
+      print("Los servicios de ubicación estan deshabilitados");
+      return null;
     }
 
     // Verificar los permisos
@@ -30,25 +28,26 @@ class _HomePageState extends State<HomePage> {
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        setState(() {
-          print("Permiso de ubicación denegado");
-        });
-        return;
+        print("Permiso de ubicación denegado");
+        return null;
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
-      setState(() {
-        print("Los permisos de ubicación estan permanentemente denegados");
-      });
-      return;
+      print("Los permisos de ubicación estan permanentemente denegados");
+      return null;
     }
 
     // obtener la ubicación
-    Position position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
-    );
-    print(position);
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+      return position;
+    } catch (e) {
+      print("Error al obtenet ubicación: $e");
+      return null;
+    }
   }
 
   @override
@@ -73,7 +72,9 @@ class _HomePageState extends State<HomePage> {
           actions: [
             IconButton(
               onPressed: () {
-                getLocation();
+                getPosition().then((value) {
+                  print(value);
+                });
               },
               icon: Icon(Icons.location_on_outlined),
               color: Colors.white,
