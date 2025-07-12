@@ -4,9 +4,9 @@ import 'package:http/http.dart' as http;
 import 'package:weatherappg12/models/weather_model.dart';
 
 class ApiServices {
-  Future<WeatherModel?> getWeatherInfo() async {
+  Future<WeatherModel?> getWeatherInfoByName(String name) async {
     final url = Uri.parse(
-      "http://api.weatherapi.com/v1/current.json?key=70866d7ade244a3c9ca20142230509&q=Lima&aqi=no",
+      "http://api.weatherapi.com/v1/current.json?key=70866d7ade244a3c9ca20142230509&q=$name&aqi=no",
     );
     final response = await http.get(url);
 
@@ -23,6 +23,24 @@ class ApiServices {
       return weatherModel;
     } else {
       throw Exception("error al cargar: ${response.statusCode}");
+    }
+  }
+
+  Future<WeatherModel?> getWeatherInfoByPos(double lat, double long) async {
+    final url = Uri.parse(
+      "http://api.weatherapi.com/v1/current.json?key=70866d7ade244a3c9ca20142230509&q=$lat,$long&aqi=no",
+    );
+    final response = await http.get(url);
+    try {
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        WeatherModel weatherModel = WeatherModel.fromJson(data);
+        print(weatherModel);
+        print(weatherModel.location.name);
+        return weatherModel;
+      }
+    } catch (e) {
+      print(e);
     }
   }
 }

@@ -11,9 +11,12 @@ class HomePage extends StatelessWidget {
       child: Scaffold(
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            print("hhola");
             ApiServices apiServices = ApiServices();
-            apiServices.getWeatherInfo();
+            // apiServices.getWeatherInfoByName("cusco");
+            apiServices.getWeatherInfoByPos(
+              -8.117676326288677,
+              -79.03435342586533,
+            );
           },
         ),
         backgroundColor: Color(0xff2C2F31),
